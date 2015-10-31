@@ -1,5 +1,6 @@
 package com.example.bayri.vocabulary;
 
+import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private DatabaseHelper mHelper;
+    private DatabaseHelper.RecordCursor mCursor;
+    private int mRecordsCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +46,18 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mHelper = new DatabaseHelper(getBaseContext());
+        // fill database
+//        for (int i = 0; i < 10; i++) {
+//            Record record = new Record();
+//            record.setEnglish("English" + i);
+//            record.setRussian("Русский" + i);
+//            mHelper.insertRecord(record);
+//        }
+
+        mRecordsCount = mHelper.getRecordsCount();
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -49,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +74,12 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
 
+    @Override
+    public void onDestroy() {
+        mCursor.close();
+        super.onDestroy();
     }
 
     @Override
@@ -97,28 +117,29 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            int newPosition = position + 1;
+            DatabaseHelper.RecordCursor cursor = queryRuns(newPosition);
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(newPosition, cursor);
         }
 
         @Override
         public int getCount() {
-            // Show 13 total pages.
-            return 13;
+            return mRecordsCount;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
+         //   DatabaseHelper.RecordCursor cursor = queryRuns(position);
             switch (position) {
                 case 0:
                     return "SECTION 1";
                 case 1:
                     return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
                 default:
-                    return "Custom" + position;
+                    return "Custom" + getCount();
+
             }
            // return null;
         }
@@ -133,15 +154,17 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static final String ARG_CURSOR = "current_cursor";
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int sectionNumber, DatabaseHelper.RecordCursor cursor) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putSerializable(ARG_CURSOR, cursor);
             fragment.setArguments(args);
             return fragment;
         }
@@ -155,7 +178,25 @@ public class MainActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            // get cursor
+            DatabaseHelper.RecordCursor cursor = (DatabaseHelper.RecordCursor) getArguments().
+                    getSerializable(ARG_CURSOR);
+            Record record = cursor.getRecord();
+            if(record != null) {
+                TextView mEnglishTextView = (TextView) rootView.findViewById(R.id.englishTextView);
+                mEnglishTextView.setText(record.getEnglish());
+                TextView mRussianTextView = (TextView) rootView.findViewById(R.id.russianTextView);
+                mRussianTextView.setText(record.getRussian());
+            }
             return rootView;
         }
+    }
+
+    /**
+     *
+     */
+    public DatabaseHelper.RecordCursor queryRuns(int id) {
+        return mHelper.queryRecord(id);
     }
 }

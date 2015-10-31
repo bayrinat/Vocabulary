@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:id="@+id/textView"
+        android:id="@+id/englishTextView"
         android:layout_below="@+id/section_label"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="110dp" />
@@ -22,10 +22,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView"
+        android:id="@+id/russianTextView"
+        android:layout_below="@+id/englishTextView"
+        android:layout_alignLeft="@+id/englishTextView"
+        android:layout_alignStart="@+id/englishTextView"
         android:layout_marginTop="132dp" />
 
 </RelativeLayout>
