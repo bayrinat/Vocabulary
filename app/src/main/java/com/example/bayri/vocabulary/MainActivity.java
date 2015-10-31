@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-         //   DatabaseHelper.RecordCursor cursor = queryRuns(position);
             switch (position) {
                 case 0:
                     return "SECTION 1";
@@ -139,9 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     return "SECTION 2";
                 default:
                     return "Custom" + getCount();
-
             }
-           // return null;
         }
     }
 
