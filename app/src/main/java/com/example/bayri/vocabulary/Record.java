@@ -8,16 +8,18 @@ public class Record {
     private long mId;
     private String mRussian;
     private String mEnglish;
-    private int mUsed;
+    private int mKnown;
 
     public Record() {
         mRussian = "";
         mEnglish = "";
+        mKnown = 0;
     }
 
     public Record(String english, String russian) {
         mRussian = russian;
         mEnglish = english;
+        mKnown = 0;
     }
 
     public long getId() {
@@ -45,10 +47,10 @@ public class Record {
     }
 
     public int getUsed() {
-        return mUsed;
+        return mKnown;
     }
 
     public void setUsed(int mUsed) {
-        this.mUsed = mUsed;
+        this.mKnown = mUsed;
     }
 }

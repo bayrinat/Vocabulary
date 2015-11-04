@@ -18,6 +18,14 @@
             android:id="@+id/LinearLayoutEnglish"
             android:weightSum="0.5">
 
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="already know"
+                android:id="@+id/knowCheckBox"
+                android:layout_gravity="right"
+                android:checked="false" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

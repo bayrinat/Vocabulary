@@ -17,8 +17,6 @@ public class AddWordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_word);
 
-        Bundle extras = getIntent().getExtras();
-
         Button addButton = (Button) findViewById(R.id.addWordButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override

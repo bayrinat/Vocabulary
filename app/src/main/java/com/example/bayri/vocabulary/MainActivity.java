@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -170,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+            // make translate visible
             LinearLayout linearLayoutRussian = (LinearLayout) rootView.findViewById(R.id.LinearLayoutRussian);
             linearLayoutRussian.setOnClickListener(new View.OnClickListener() {
 
@@ -177,6 +179,17 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     TextView russianTextView = (TextView) rootView.findViewById(R.id.russianTextView);
                     russianTextView.setVisibility(View.VISIBLE);
+                }
+            });
+
+            // set as known word
+            CheckBox knowCheckBox = (CheckBox) rootView.findViewById(R.id.knowCheckBox);
+            knowCheckBox.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    ((CheckBox)v).isChecked();
+
                 }
             });
 
