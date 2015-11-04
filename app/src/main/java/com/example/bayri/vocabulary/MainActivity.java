@@ -1,5 +1,7 @@
 package com.example.bayri.vocabulary;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,10 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -48,13 +50,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mHelper = new DatabaseHelper(getBaseContext());
-        // fill database
-//        for (int i = 0; i < 10; i++) {
-//            Record record = new Record();
-//            record.setEnglish("English" + i);
-//            record.setRussian("Русский" + i);
-//            mHelper.insertRecord(record);
-//        }
 
         mRecordsCount = mHelper.getRecordsCount();
 
@@ -70,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent addNewWord =
+                        new Intent(MainActivity.this, AddWordActivity.class);
+                startActivityForResult(addNewWord, 0); // start Activity
             }
         });
     }
@@ -104,6 +100,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK ) {
+            Bundle bundle = data.getExtras();
+            String englishWord = bundle.getString(AddWordActivity.ENGLISH_WORD);
+            String russianWord = bundle.getString(AddWordActivity.RUSSIAN_WORD);
+            Record record = new Record(englishWord, russianWord);
+            mHelper.insertRecord(record);
+            mRecordsCount = mHelper.getRecordsCount();
+            mViewPager.getAdapter().notifyDataSetChanged();
+        }
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -127,18 +135,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return mRecordsCount;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                default:
-                    return "Custom" + getCount();
-            }
         }
     }
 
@@ -172,19 +168,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            LinearLayout linearLayoutRussian = (LinearLayout) rootView.findViewById(R.id.LinearLayoutRussian);
+            linearLayoutRussian.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    TextView russianTextView = (TextView) rootView.findViewById(R.id.russianTextView);
+                    russianTextView.setVisibility(View.VISIBLE);
+                }
+            });
 
             // get cursor
             DatabaseHelper.RecordCursor cursor = (DatabaseHelper.RecordCursor) getArguments().
                     getSerializable(ARG_CURSOR);
             Record record = cursor.getRecord();
             if(record != null) {
-                TextView mEnglishTextView = (TextView) rootView.findViewById(R.id.englishTextView);
-                mEnglishTextView.setText(record.getEnglish());
-                TextView mRussianTextView = (TextView) rootView.findViewById(R.id.russianTextView);
-                mRussianTextView.setText(record.getRussian());
+                TextView englishTextView = (TextView) rootView.findViewById(R.id.englishTextView);
+                englishTextView.setText(record.getEnglish());
+                TextView russianTextView = (TextView) rootView.findViewById(R.id.russianTextView);
+                russianTextView.setText(record.getRussian());
+                // make russian invisible
+                russianTextView.setVisibility(View.INVISIBLE);
             }
             return rootView;
         }

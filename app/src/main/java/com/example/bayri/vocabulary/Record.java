@@ -15,6 +15,11 @@ public class Record {
         mEnglish = "";
     }
 
+    public Record(String english, String russian) {
+        mRussian = russian;
+        mEnglish = english;
+    }
+
     public long getId() {
         return mId;
     }

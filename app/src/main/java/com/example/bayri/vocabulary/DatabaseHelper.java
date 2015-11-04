@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Создание таблицы "main"
+        // Create "main"
         db.execSQL("CREATE TABLE main (" +
                 "_id integer primary key autoincrement, " +
                 "english varchar(200), " +
