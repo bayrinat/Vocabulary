@@ -1,24 +1,34 @@
 package com.example.bayri.vocabulary;
 
 /**
- * Created by bayri on 31.10.2015.
+ * Simple record class
  */
 public class Record {
 
     private long mId;
     private String mRussian;
     private String mEnglish;
+    private int mCategory;
     private int mKnown;
 
     public Record() {
         mRussian = "";
         mEnglish = "";
+        mCategory = 0;
         mKnown = 0;
     }
 
     public Record(String english, String russian) {
         mRussian = russian;
         mEnglish = english;
+        mCategory = 0;
+        mKnown = 0;
+    }
+
+    public Record(String english, String russian, int category) {
+        mRussian = russian;
+        mEnglish = english;
+        mCategory = category;
         mKnown = 0;
     }
 
@@ -44,6 +54,14 @@ public class Record {
 
     public void setRussian(String mRussian) {
         this.mRussian = mRussian;
+    }
+
+    public int getCategory() {
+        return mCategory;
+    }
+
+    public void setCategory(int mCategory) {
+        this.mCategory = mCategory;
     }
 
     public int getUsed() {

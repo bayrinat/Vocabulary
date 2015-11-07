@@ -11,7 +11,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="start|center_horizontal">
+        android:gravity="start|center_horizontal"
+        android:padding="4dp">
 
         <EditText
             android:layout_width="wrap_content"
@@ -31,6 +32,21 @@
             android:hint="русский"
             android:layout_gravity="center_horizontal" />
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp">
+
+            <Spinner
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/categorySpinner"
+                android:spinnerMode="dialog"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,4 +55,5 @@
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
+
 </RelativeLayout>
