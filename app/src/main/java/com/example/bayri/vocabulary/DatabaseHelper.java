@@ -54,9 +54,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return getWritableDatabase().insert(TABLE_CATEGORIES, null, cv);
     }
 
+    public String getCategory(int id) {
+        id++;
+        String condition = "_id=\'" + id + "\'";
+        Cursor wrapped = getReadableDatabase().query(TABLE_CATEGORIES,
+                null, condition, null, null, null, null, null);
+        wrapped.moveToFirst();
+        return wrapped.getString(wrapped.getColumnIndex(COLUMN_CATEGORY));
+    }
+
     public boolean isExsistWord(String name) {
         String condition = "english = \"" + name + "\"";
-        Cursor wrapped = getWritableDatabase().query(TABLE_MAIN,
+        Cursor wrapped = getReadableDatabase().query(TABLE_MAIN,
                 null, condition, null, null, null, null, null);
         return wrapped.getCount() > 0;
     }

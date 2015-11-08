@@ -14,6 +14,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -23,6 +26,7 @@ import java.nio.charset.Charset;
 public class MainActivity extends AppCompatActivity {
 
     public static final String CATEGORY_ID_START = "category_word_id_start";
+    public static final String FILENAME = "words.csv";
 
     private DatabaseHelper mHelper;
 
@@ -32,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mHelper = new DatabaseHelper(getBaseContext());
+
+        if(mHelper.getCategories().size() == 0)
+            mHelper.insertCategory("All");
+
         // fill categories spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, mHelper.getCategories());
@@ -60,14 +68,25 @@ public class MainActivity extends AppCompatActivity {
                 wordsExport.execute();
             }
         });
-    }
 
+        Button addCategoryButton = (Button) findViewById(R.id.addCategoryButton);
+        addCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText editText = (EditText) findViewById(R.id.editText);
+                mHelper.isExsistCategory(editText.getText().toString());
+                editText.getText().clear();
+            }
+        });
+    }
 
     public class WordsExport extends AsyncTask<Long, Object, Object> {
 
         @Override
         protected Object doInBackground(Long... params) {
-            InputStream istream = getResources().openRawResource(R.raw.words);
+            InputStream  istream = getResources().openRawResource(R.raw.words);
+            if(istream == null)
+                return null;
             try {
                 int index = 0;
                 ContentValues cv = new ContentValues();

@@ -1,6 +1,7 @@
 package com.example.bayri.vocabulary;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,10 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class SwapActivity extends AppCompatActivity {
@@ -108,12 +113,28 @@ public class SwapActivity extends AppCompatActivity {
             Bundle bundle = data.getExtras();
             String englishWord = bundle.getString(AddWordActivity.ENGLISH_WORD);
             String russianWord = bundle.getString(AddWordActivity.RUSSIAN_WORD);
-            int categoryWord = bundle.getInt(AddWordActivity.CATEGORY_ID);
+            int categoryId = bundle.getInt(AddWordActivity.CATEGORY_ID);
             Record record = new Record(englishWord, russianWord);
-            record.setCategory(categoryWord);
+            record.setCategory(categoryId);
             mHelper.insertRecord(record);
             mRecordsCount = mHelper.getRecordsCount();
             mViewPager.getAdapter().notifyDataSetChanged();
+
+            String output = englishWord + "#" + russianWord + "#" +
+                    mHelper.getCategory(categoryId) + "\r\n";
+            WriteToFile(output);
+        }
+    }
+
+    private void WriteToFile(String raw){
+        try {
+            FileOutputStream fos = openFileOutput(MainActivity.FILENAME, Context.MODE_PRIVATE);
+            fos.write(raw.getBytes());
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
